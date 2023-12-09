@@ -1,4 +1,4 @@
-import { check } from 'express-validator'
+import { check , checkSchema} from 'express-validator'
 
 export const productValidation = [
   check('name')
@@ -15,13 +15,9 @@ export const productValidation = [
     .withMessage('Price must not be empty')
     .isFloat({ min: 1 })
     .withMessage('Price Must be a positive number'),
-    check('image')
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Image must not be empty')
-      ?.isURL()
-      .withMessage('Image must be in a URL format'),
+    // check('image')
+    // .notEmpty()
+    // .withMessage('Image must not be empty*'),
   check('description')
     .trim()
     .notEmpty()

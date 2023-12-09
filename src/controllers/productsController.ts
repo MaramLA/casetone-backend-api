@@ -90,6 +90,10 @@ export const createProduct = async (request: Request, response: Response, next: 
 
     if (imagePath) {
       newProduct.image = imagePath
+      console.log('Add Image');
+    }else if(!imagePath){
+      console.log('No Image Yet!');
+          next()   
     }
 
     if (newProduct) {
@@ -117,16 +121,13 @@ export const updateProduct = async (request: Request, response: Response, next: 
   try {
     const { id } = request.params
     const updatedProduct = request.body
-
-    const newProduct: IProduct = new Product({
-      updatedProduct,
-    })
+    const newImage = request.file?.path
 
     let imgUrl = ''
-    if (request.file?.path && updatedProduct) {
-      const newImage = request.file?.path
-      imgUrl = `public/images/imageProduct/${newImage}`
+    if (request.file?.path) {
+      imgUrl = `${newImage}`
       updatedProduct.image = imgUrl
+
       //check product have image
       const productInfo = await Product.findById(id)
       const productImage = productInfo?.image
@@ -137,17 +138,12 @@ export const updateProduct = async (request: Request, response: Response, next: 
         } catch (error) {
           throw ApiError.badRequest(400, `Error deleting file:${error}`)
         }
-      } else if (!productImage) {
-        try {
-          const productUpdated = await services.findAndUpdateProduct(id, request, next, updatedProduct)
-        } catch (error) {
-          throw ApiError.badRequest(400, `Error Adding file:${error}`)
-        }
+      } 
+      else if(!productImage){
+             next()
       }
     }
-
     const productUpdated = await services.findAndUpdateProduct(id, request, next, updatedProduct)
-
     response.status(200).json({
       message: `Update a single product`,
       payload: productUpdated,
@@ -157,7 +153,6 @@ export const updateProduct = async (request: Request, response: Response, next: 
       throw ApiError.badRequest(400, `ID format is Invalid must be 24 characters`)
     } else {
       next(error)
-      console.log('error: ', error)
     }
   }
 }

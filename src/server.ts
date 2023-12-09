@@ -40,7 +40,7 @@ app.get('/', (request: Request, response: Response) => {
 })
 
 app.use((request: Request, response: Response, next: NextFunction) => {
-  next(ApiError.badRequest(404, `Router not Found`))
+  next(ApiError.badRequest(404, `*Router not Found*`))
 })
 
 app.use(apiErrorHandler)
@@ -53,7 +53,6 @@ mongoose
   .catch((err) => {
     console.log(`MongoDB connection error: ${err}`)
   })
-
 app.listen(PORT, () => {
   console.log(`Server running http://localhost:${PORT}`)
 })

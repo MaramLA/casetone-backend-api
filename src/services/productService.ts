@@ -17,7 +17,6 @@ export const findAllProducts = async (request: Request) => {
   const skipField = {__v: 0, updateAt: 0}
 
   let priceFilter = { $gte: 0, $lte: Number.MAX_SAFE_INTEGER }
-
   // search products
   const searchRegularExpression = new RegExp('.*' + search + '.*', 'i')
   const searchFilter = {
@@ -75,7 +74,7 @@ export const findAllProducts = async (request: Request) => {
     .populate('categories')
     .skip(skip)
     .limit(limit)
-     .sort(sortOption) 
+    .sort(sortOption) 
  
 
   
