@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 
 import ApiError from '../errors/ApiError'
-import {Error} from '../types'
+import { Error } from '../types'
 
 const apiErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof ApiError) {
@@ -10,7 +10,6 @@ const apiErrorHandler = (err: Error, req: Request, res: Response, next: NextFunc
   }
 
   res.status(500).json({ msg: err.message })
-
 }
 
 export default apiErrorHandler

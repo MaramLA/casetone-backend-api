@@ -3,7 +3,7 @@ import bycrypt from 'bcrypt'
 import ApiError from '../errors/ApiError'
 import { IUser, User } from '../models/user'
 
-//check entered email match to email on DB 
+//check entered email match to email on DB
 export const isEmailMatch = async (inputEmail: string): Promise<IUser> => {
   const user = await User.findOne({ email: inputEmail })
 
@@ -12,7 +12,7 @@ export const isEmailMatch = async (inputEmail: string): Promise<IUser> => {
   }
   return user
 }
-//check entered password match to password on DB 
+//check entered password match to password on DB
 export const isPasswordMatch = async (user: IUser, password: string) => {
   const passwordCompare = await bycrypt.compare(password, user.password)
   if (!passwordCompare) {
@@ -25,4 +25,3 @@ export const isUserBanned = (user: IUser) => {
     throw ApiError.badRequest(403, 'This user was banned please connect to xxx@xx.com')
   }
 }
- 

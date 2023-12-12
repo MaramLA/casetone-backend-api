@@ -90,11 +90,10 @@ export const createProduct = async (request: Request, response: Response, next: 
 
     if (imagePath) {
       newProduct.image = imagePath
-      console.log('Add Image');
-    }else if(!imagePath){
-      console.log('No Image Yet!');
-          next()   
-
+      console.log('Add Image')
+    } else if (!imagePath) {
+      console.log('No Image Yet!')
+      next()
     }
 
     if (newProduct) {
@@ -139,10 +138,8 @@ export const updateProduct = async (request: Request, response: Response, next: 
         } catch (error) {
           throw ApiError.badRequest(400, `Error deleting file:${error}`)
         }
-
-      } 
-      else if(!productImage){
-             next()
+      } else if (!productImage) {
+        next()
       }
     }
     const productUpdated = await services.findAndUpdateProduct(id, request, next, updatedProduct)

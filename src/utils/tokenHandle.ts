@@ -27,7 +27,7 @@ export const verifyToken = (token: string, jwtSecret: string) => {
   }
 
   const decoded = jwt.verify(token, jwtSecret)
-  
+
   if (!decoded) {
     throw ApiError.badRequest(401, 'Invalid access token')
   }

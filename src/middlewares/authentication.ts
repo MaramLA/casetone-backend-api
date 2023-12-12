@@ -60,7 +60,6 @@ export const isAdmin = async (request: CustomeRequest, response: Response, next:
   }
 }
 
-
 // check if admin
 export const isNotAdmin = async (
   request: CustomeRequest,
@@ -78,4 +77,3 @@ export const isNotAdmin = async (
     next(error)
   }
 }
-

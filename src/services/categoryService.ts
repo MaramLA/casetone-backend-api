@@ -49,7 +49,11 @@ export const findIfCategoryExist = async (newInput: ICategory, next: NextFunctio
   return categoryExist
 }
 // find and update category by id
-export const findAndUpdateCategory = async (id: string, next: NextFunction, updatedProduct: Request) => {
+export const findAndUpdateCategory = async (
+  id: string,
+  next: NextFunction,
+  updatedProduct: Request
+) => {
   const categoryUpdated = await Category.findOneAndUpdate({ _id: id }, updatedProduct, {
     new: true,
   })

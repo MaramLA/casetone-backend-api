@@ -1,3 +1,18 @@
+<!--
+Personal notes:
+- categoris api is working
+- create delete and get all orders for admin is working
+- login and logout is working
+- register new user is working
+- get users for admin is working
+- get products is working
+
+! what left to check in the API
+- the products api + update the products schema
+- the users api + update the users schema
+ -->
+
+
 # Library/E-commerce Application API
 
 This repository contains a Node.js/Express.js application with RESTful API endpoints for a library or e-commerce application. The API allows you to interact with items in the library or products in the store.

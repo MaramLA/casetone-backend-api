@@ -4,40 +4,41 @@ import { config } from 'dotenv'
 import express, { Application, NextFunction, Request, Response } from 'express'
 import mongoose from 'mongoose'
 
-import authRouter from './routers/authRouter'
-import categoriesRouter from './routers/categoriesRouter'
-import ordersRouter from './routers/ordersRouter'
-import productsRouter from './routers/productRouter'
-import usersRouter from './routers/usersRouter'
+import authRouter from '../src/routers/authRouter'
+import categoriesRouter from '../src/routers/categoriesRouter'
+import ordersRouter from '../src/routers/ordersRouter'
+import productsRouter from '../src/routers/productRouter'
+import usersRouter from '../src/routers/usersRouter'
 
-import ApiError from './errors/ApiError'
-import apiErrorHandler from './middlewares/errorHandler'
-import myLogger from './middlewares/logger'
+import { dev } from '../src/config'
+import ApiError from '../src/errors/ApiError'
+import apiErrorHandler from '../src/middlewares/errorHandler'
+import myLogger from '../src/middlewares/logger'
 
 config()
 const app: Application = express()
-const PORT = 5050
+const port = dev.app.port
 
 mongoose.set('strictQuery', false)
 mongoose.set('strictPopulate', false)
-const URL = process.env.ATLAS_URL || 'mongodb://127.0.0.1:27017/full-stack-demo-db'
+const databaseUrl = dev.db.url
 
 app.use(myLogger)
-app.use(cors)
+app.use(cors())
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('imageUser'))
 
-app.use('/products', productsRouter)
 app.use('/categories', categoriesRouter)
+app.use('/products', productsRouter)
 app.use('/orders', ordersRouter)
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 
 app.get('/', (request: Request, response: Response) => {
   response.json({
-    message: 'CheckUp The Server',
+    message: 'The server is running fine',
   })
 })
 
@@ -48,7 +49,7 @@ app.use((request: Request, response: Response, next: NextFunction) => {
 app.use(apiErrorHandler)
 
 mongoose
-  .connect(URL)
+  .connect(databaseUrl)
   .then(() => {
     console.log('Database connected')
   })
@@ -56,6 +57,6 @@ mongoose
     console.log(`MongoDB connection error: ${err}`)
   })
 
-app.listen(PORT, () => {
-  console.log(`Server running http://localhost:${PORT}`)
+app.listen(port, () => {
+  console.log(`Server running http://localhost:${port}`)
 })
