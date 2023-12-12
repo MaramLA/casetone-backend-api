@@ -1,17 +1,18 @@
-import express, { Application, Request, Response, NextFunction } from 'express'
-import mongoose from 'mongoose'
-import { config } from 'dotenv'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
+import { config } from 'dotenv'
+import express, { Application, NextFunction, Request, Response } from 'express'
+import mongoose from 'mongoose'
 
 import authRouter from './routers/authRouter'
-import usersRouter from './routers/usersRouter'
+import categoriesRouter from './routers/categoriesRouter'
 import ordersRouter from './routers/ordersRouter'
 import productsRouter from './routers/productRouter'
-import categoriesRouter from './routers/categoriesRouter'
+import usersRouter from './routers/usersRouter'
 
 import ApiError from './errors/ApiError'
-import myLogger from './middlewares/logger'
 import apiErrorHandler from './middlewares/errorHandler'
+import myLogger from './middlewares/logger'
 
 config()
 const app: Application = express()
@@ -22,6 +23,7 @@ mongoose.set('strictPopulate', false)
 const URL = process.env.ATLAS_URL || 'mongodb://127.0.0.1:27017/full-stack-demo-db'
 
 app.use(myLogger)
+app.use(cors)
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

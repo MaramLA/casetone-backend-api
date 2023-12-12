@@ -4,7 +4,8 @@ import mongoose from 'mongoose'
 import ApiError from '../errors/ApiError'
 import { IOrder, IOrderPayment, IOrderProduct, Order } from '../models/order'
 import { IProduct, Product } from '../models/product'
-import { User } from '../models/user'
+import { IUser, User } from '../models/user'
+import { sendEmail } from '../utils/sendEmail'
 
 interface CustomeRequest extends Request {
   userId?: string
@@ -261,6 +262,18 @@ export const handlePayment = async (
         throw ApiError.badRequest(500, 'Process ended unsuccssufully')
       }
     })
+
+    // prepare and send email to place an order
+    const findUser: IUser | any = await User.findById(request.userId)
+
+    const emailData = {
+      email: findUser.email,
+      subject: 'Order Placed',
+      html: ` 
+    <h1>Hello ${findUser?.firstName}</h1>
+    <p>Your order ${newOrder._id} was placed succussfully</p>`,
+    }
+    sendEmail(emailData)
   } catch (error) {
     next(error)
   }
