@@ -158,10 +158,7 @@ export const findAndUpdateOrder = async (
       if (!updatedOrder) {
         throw ApiError.badRequest(500, 'Updating process ended unsuccussfully')
       }
-      //   response.status(200).send({
-      //     message: `Updated order status succussfully`,
-      //     payload: updatedOrder,
-      //   })
+  
       return updatedOrder
     }
   } catch (error) {

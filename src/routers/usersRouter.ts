@@ -27,7 +27,7 @@ router.post('/activate', controller.activateUser)
 router.put(
   '/profile',
   isLoggedIn,
-  validation.userUpdatenValidation,
+  validation.userUpdateValidation,
   runValidation,
   controller.updateUser
 )

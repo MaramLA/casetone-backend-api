@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 
-
 export interface IProduct extends mongoose.Document {
   _id: mongoose.Schema.Types.ObjectId
   name: string
@@ -10,6 +9,8 @@ export interface IProduct extends mongoose.Document {
   sold: number
   categories: mongoose.Schema.Types.ObjectId[]
   description: string
+  sizes: string
+  variants: string
   createAt?: Date
   updateAt?: Date
 }
@@ -55,7 +56,16 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-
+    sizes: {
+      type: String,
+      required: [true, 'Product size is required'],
+      trim: true,
+    },
+    variants: {
+      type: String,
+      required: [true, 'Product variant is required'],
+      trim: true,
+    },
   },
   { timestamps: true }
 )

@@ -14,8 +14,6 @@ export const userRegistrationValidation = [
     .notEmpty()
     .withMessage('Last name must not be empty')
     .isLength({ min: 3, max: 20 })
-    .withMessage('Last name must be at least 3 charachters')
-    .isLength({ min: 3, max: 20 })
     .withMessage('Last name must be at least 3 characters')
     .isLength({ max: 20 })
     .withMessage('Last name must be less than 20 characters'),
@@ -31,9 +29,10 @@ export const userRegistrationValidation = [
     .withMessage('Password must not be empty')
     .isLength({ min: 5 })
     .withMessage('password must be at least 5 characters'),
+  check('address').trim().notEmpty().withMessage('address must not be empty'),
 ]
 
-export const userUpdatenValidation = [
+export const userUpdateValidation = [
   check('firstName')
     .optional()
     .trim()
@@ -68,6 +67,7 @@ export const userUpdatenValidation = [
     .withMessage('Password must not be empty')
     .isLength({ min: 5 })
     .withMessage('password must be at least 5 characters'),
+  check('address').optional().trim().notEmpty().withMessage('address must not be empty'),
 ]
 
 export const userLoginValidation = [

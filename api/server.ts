@@ -7,7 +7,7 @@ import mongoose from 'mongoose'
 import authRouter from '../src/routers/authRouter'
 import categoriesRouter from '../src/routers/categoriesRouter'
 import ordersRouter from '../src/routers/ordersRouter'
-import productsRouter from '../src/routers/productRouter'
+import productsRouter from '../src/routers/productsRouter'
 import usersRouter from '../src/routers/usersRouter'
 
 import { dev } from '../src/config'

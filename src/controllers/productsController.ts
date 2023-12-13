@@ -86,6 +86,8 @@ export const createProduct = async (request: Request, response: Response, next: 
       sold: newInput.sold,
       description: newInput.description,
       categories: newInput.categories,
+      sizes: newInput.sizes,
+      variants: newInput.variants,
     })
 
     if (imagePath) {
