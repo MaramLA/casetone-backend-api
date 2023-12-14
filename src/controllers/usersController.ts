@@ -88,11 +88,14 @@ export const registUser = async (request: Request, response: Response, next: Nex
       subject: 'Activate your account',
       html: ` 
     <h1> Hello</h1>
-    <p>Please activate your account by <a href= "http://127.0.0.1:5050/users/activate/${token}">click here</a></p>`,
+    <p>Please activate your account by <a href= "http://localhost:3000/activate/${token}">click here</a></p>`,
     }
     sendEmail(emailData)
 
-    response.status(200).json({ message: 'Check your email to activate the account ', token })
+    response.status(200).json({
+      message: 'Check your email to activate the account ',
+      // token
+    })
   } catch (error) {
     next(error)
   }
