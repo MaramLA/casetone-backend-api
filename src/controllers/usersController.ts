@@ -109,7 +109,7 @@ export const activateUser = async (request: Request, response: Response, next: N
     const decodedUser = verifyToken(token, dev.app.jwtUserActivationKey) as JwtPayload
     const user = await services.createUser(decodedUser)
 
-    response.status(201).json({ message: `User with id: ${user.id} was created` })
+    response.status(201).json({ message: `Account activated succssfully` })
   } catch (error) {
     next(error)
   }
