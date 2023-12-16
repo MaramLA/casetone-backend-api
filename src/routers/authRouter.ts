@@ -11,8 +11,15 @@ import { userLoginValidation } from '../validation/userValidation'
 const router = express.Router()
 
 //GET --> login by email and password
-router.post('/login', isLoggedOut, rateLimitMiddleware,userLoginValidation, runValidation,controller.login)
+router.post(
+  '/login',
+  isLoggedOut,
+  rateLimitMiddleware,
+  userLoginValidation,
+  runValidation,
+  controller.login
+)
 //GET --> logout
-router.post('/logout', isLoggedIn, controller.logout)
+router.post('/logout', controller.logout)
 
 export default router
