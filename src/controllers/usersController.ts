@@ -239,14 +239,14 @@ export const forgetPassword = async (request: Request, response: Response, next:
 
     const user = await services.findSingleUser({ email })
 
-    const token = generateToken({ email }, dev.app.jwtResetKey, '2m')
+    const token = generateToken({ email }, dev.app.jwtResetKey, '3m')
 
     const emailData = {
       email: email,
       subject: 'Reset The password',
       html: ` 
-    <h1> Hello${user.firstName}</h1>
-    <p>Please reset the password by <a href= "http://127.0.0.1:8080/users/reset/${token}">click here</a></p>`,
+    <h1> Hello ${user.firstName}</h1>
+    <p>Please reset the password by <a href= "http://localhost:3000/reset-password/${token}">click here</a></p>`,
     }
     sendEmail(emailData)
 
