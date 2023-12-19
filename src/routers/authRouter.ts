@@ -20,6 +20,7 @@ router.post(
   controller.login
 )
 //GET --> logout
+// router.post('/logout', isLoggedIn, controller.logout)
 router.post('/logout', controller.logout)
 
 export default router

@@ -14,7 +14,7 @@ export const login = async (request: Request, response: Response, next: NextFunc
     await services.isPasswordMatch(user, password)
     services.isUserBanned(user)
 
-    const accessToken = generateToken({ _id: user.id }, dev.app.jwtAccessKey, '15m')
+    const accessToken = generateToken({ _id: user.id }, dev.app.jwtAccessKey, '2m')
     setCookieResponse(response, accessToken)
 
     response.status(200).json({ message: `you logged in ${user.isAdmin ? 'as an Admin' : ''}` })

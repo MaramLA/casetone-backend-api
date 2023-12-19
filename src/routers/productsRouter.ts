@@ -10,32 +10,50 @@ import { runValidation } from '../validation/runValidation'
 
 const router = Router()
 
-// // GET --> get all products
-// router.get(`/`, controller.getAllProducts)
-// //GET --> get a single product by ID
-// router.get(`/:id`, controller.getSingleProduct)
-// //DELETE --> delete a single product by ID
-// router.delete(`/:id`, isLoggedIn, isAdmin, controller.deleteProduct)
-// //POST --> create a product
-// router.post('/', isLoggedIn, isAdmin,upload.single('image'), productValidation, runValidation,controller.createProduct)
-// //PUT --> update a single product by ID
-// router.put(`/:id`, isLoggedIn, isAdmin,  upload.single('image'),productValidationUpdate, runValidation, controller.updateProduct)
-
 // GET --> get all products
 router.get(`/`, controller.getAllProducts)
 //GET --> get a single product by ID
 router.get(`/:id`, controller.getSingleProduct)
 //DELETE --> delete a single product by ID
-router.delete(`/:id`, controller.deleteProduct)
+router.delete(`/:id`, isLoggedIn, isAdmin, controller.deleteProduct)
 //POST --> create a product
-router.post('/', upload.single('image'), productValidation, runValidation, controller.createProduct)
+router.post(
+  '/',
+  isLoggedIn,
+  isAdmin,
+  upload.single('image'),
+  productValidation,
+  runValidation,
+  controller.createProduct
+)
 //PUT --> update a single product by ID
 router.put(
   `/:id`,
+  isLoggedIn,
+  isAdmin,
   upload.single('image'),
   productValidationUpdate,
   runValidation,
   controller.updateProduct
 )
+
+// --------------
+
+// // GET --> get all products
+// router.get(`/`, controller.getAllProducts)
+// //GET --> get a single product by ID
+// router.get(`/:id`, controller.getSingleProduct)
+// //DELETE --> delete a single product by ID
+// router.delete(`/:id`, controller.deleteProduct)
+// //POST --> create a product
+// router.post('/', upload.single('image'), productValidation, runValidation, controller.createProduct)
+// //PUT --> update a single product by ID
+// router.put(
+//   `/:id`,
+//   upload.single('image'),
+//   productValidationUpdate,
+//   runValidation,
+//   controller.updateProduct
+// )
 
 export default router
