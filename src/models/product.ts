@@ -11,8 +11,6 @@ export interface IProduct extends mongoose.Document {
   description: string
   sizes: string
   variants: string
-  createAt?: Date
-  updateAt?: Date
 }
 
 const productSchema = new mongoose.Schema(

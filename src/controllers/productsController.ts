@@ -76,6 +76,7 @@ export const createProduct = async (request: Request, response: Response, next: 
   try {
     const newInput = request.body
     const imagePath = request.file?.path
+    console.log('imagePath ' + imagePath)
 
     const productExist = await services.findIfProductExist(newInput, next)
 

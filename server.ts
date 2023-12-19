@@ -4,16 +4,16 @@ import { config } from 'dotenv'
 import express, { Application, NextFunction, Request, Response } from 'express'
 import mongoose from 'mongoose'
 
-import authRouter from '../src/routers/authRouter'
-import categoriesRouter from '../src/routers/categoriesRouter'
-import ordersRouter from '../src/routers/ordersRouter'
-import productsRouter from '../src/routers/productsRouter'
-import usersRouter from '../src/routers/usersRouter'
+import authRouter from './src/routers/authRouter'
+import categoriesRouter from './src/routers/categoriesRouter'
+import ordersRouter from './src/routers/ordersRouter'
+import productsRouter from './src/routers/productsRouter'
+import usersRouter from './src/routers/usersRouter'
 
-import { dev } from '../src/config'
-import ApiError from '../src/errors/ApiError'
-import apiErrorHandler from '../src/middlewares/errorHandler'
-import myLogger from '../src/middlewares/logger'
+import { dev } from './src/config'
+import ApiError from './src/errors/ApiError'
+import apiErrorHandler from './src/middlewares/errorHandler'
+import myLogger from './src/middlewares/logger'
 
 config()
 const app: Application = express()
@@ -28,8 +28,7 @@ app.use(cors())
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-// app.use(express.static('imageUser'))
-app.use('public', express.static('public'))
+app.use('/public', express.static('public'))
 
 app.use('/categories', categoriesRouter)
 app.use('/products', productsRouter)
@@ -61,3 +60,7 @@ mongoose
 app.listen(port, () => {
   console.log(`Server running http://localhost:${port}`)
 })
+
+// app.use(express.static('imageUser'))
+// app.use('../public', express.static('public'))
+// app.use('/images/*', express.static('public/images'))

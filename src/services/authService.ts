@@ -22,6 +22,6 @@ export const isPasswordMatch = async (user: IUser, password: string) => {
 //check entered user is blocked or not
 export const isUserBanned = (user: IUser) => {
   if (user.isBanned) {
-    throw ApiError.badRequest(403, 'This user was banned please connect to xxx@xx.com')
+    throw ApiError.badRequest(403, 'This user was banned please connect to support@casetone.com')
   }
 }
