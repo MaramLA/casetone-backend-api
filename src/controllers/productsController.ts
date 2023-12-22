@@ -76,17 +76,6 @@ export const deleteProduct = async (request: Request, response: Response, next: 
         }
       }
     })
-    // if (deletedProduct) {
-    //   const parts = deletedProduct.image.split('/')
-    //   const publicId = `${foldername}/` + parts[parts.length - 1].split('.')[0] // Assumes last segment is public ID
-    //   console.log('publicId111: ', publicId)
-    //   const deletionResult = await cloudinary.uploader.destroy(publicId)
-    //   if (deletionResult.result === 'ok') {
-    //     console.log('Image deleted from Cloudinary')
-    //   } else {
-    //     console.error('Failed to delete image from Cloudinary')
-    //   }
-    // }
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       if (error.path === '_id' && error.kind === 'ObjectId') {
@@ -108,16 +97,15 @@ export const deleteProduct = async (request: Request, response: Response, next: 
 export const createProduct = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const newInput = request.body
-    let imagePath = request.file?.path
-    console.log('imagePath ' + imagePath)
+    let imagePath = request.file && request.file?.path
 
     const productExist = await services.findIfProductExist(newInput, next)
 
     const newProduct: IProduct = new Product({
       name: newInput.name,
-      price: newInput.price,
-      quantity: newInput.quantity,
-      sold: newInput.sold,
+      price: Number(newInput.price),
+      quantity: Number(newInput.quantity),
+      sold: Number(newInput.sold),
       description: newInput.description,
       categories: newInput.categories,
       sizes: newInput.sizes,
@@ -130,25 +118,27 @@ export const createProduct = async (request: Request, response: Response, next: 
     } else if (!imagePath) {
       next(ApiError.badRequest(400, `Provide an image please`))
     }
-
-    const cloudinaryResponse = await cloudinary.uploader.upload(
-      newProduct.image,
-      { folder: 'sda-ecommerce' },
-      function (error, result) {
-        console.log(result)
-      }
-    )
-    newProduct.image = cloudinaryResponse.secure_url
+    if (newProduct.image) {
+      const cloudinaryResponse = await cloudinary.uploader.upload(
+        newProduct.image,
+        { folder: 'sda-ecommerce' },
+        function (result) {
+          console.log(result)
+        }
+      )
+      newProduct.image = cloudinaryResponse.secure_url
+    }
+    console.log('newProduct.image ' + newProduct.image)
 
     if (newProduct) {
-      await newProduct.save()
+      const createdProduct = await newProduct.save()
+      response.status(201).json({
+        message: `Created a new product`,
+        createdProduct,
+      })
     } else {
       next(ApiError.badRequest(400, `Invalid document`))
     }
-
-    response.status(201).json({
-      message: `Create a single product`,
-    })
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       throw ApiError.badRequest(
