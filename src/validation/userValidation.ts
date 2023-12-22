@@ -77,12 +77,7 @@ export const userLoginValidation = [
     .withMessage('Email must not be empty')
     .isEmail()
     .withMessage('Email is not valid'),
-  check('password')
-    .trim()
-    .notEmpty()
-    .withMessage('Password must not be empty')
-    .isLength({ min: 5 })
-    .withMessage('password must be at least 5 characters'),
+  check('password').trim().notEmpty().withMessage('Password must not be empty'),
 ]
 
 export const userForgetPasswordValidation = [

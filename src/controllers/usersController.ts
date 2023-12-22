@@ -126,11 +126,15 @@ export const updateUser = async (
     const { email } = request.body
     const updatedUser = request.body
 
-    if (updatedUser.isBanned || updatedUser.isAdmin) {
+    // if (updatedUser.isBanned || updatedUser.isAdmin) {
+    //   throw ApiError.badRequest(403, 'you do not have permission to ban users or modify thier role')
+    // }
+    if (updatedUser.isBanned) {
       throw ApiError.badRequest(403, 'you do not have permission to ban users or modify thier role')
     }
-
-    await services.findIfUserEmailExist(email, id)
+    if (email) {
+      await services.findIfUserEmailExist(email, id)
+    }
     const user = await services.findUserAndUpdate({ _id: id }, updatedUser)
 
     response.status(200).json({ message: `User with id: ${user.id} was updated` })
@@ -150,7 +154,7 @@ export const banUser = async (request: Request, response: Response, next: NextFu
 
     const user = await services.updateBanStatusById(id, true)
 
-    response.status(200).json({ message: `User with id: ${user.id} was banned` })
+    response.status(200).json({ message: `User with id: ${user.id} was banned`, id: id })
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       next(ApiError.badRequest(400, `ID format is Invalid must be 24 characters`))
@@ -167,7 +171,7 @@ export const unBanUser = async (request: Request, response: Response, next: Next
 
     const user = await services.updateBanStatusById(id, false)
 
-    response.status(200).json({ message: `User with id: ${user.id} was Unbanned` })
+    response.status(200).json({ message: `User with id: ${user.id} was Unbanned`, id: id })
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       next(ApiError.badRequest(400, `ID format is Invalid must be 24 characters`))

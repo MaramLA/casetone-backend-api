@@ -2,9 +2,19 @@ import { NextFunction, Request, Response } from 'express'
 import fs from 'fs/promises'
 import mongoose from 'mongoose'
 
+// import cloudinaryService from '../config/cloudinary'
 import ApiError from '../errors/ApiError'
 import { IProduct, Product } from '../models/product'
 import * as services from '../services/productService'
+
+import { v2 as cloudinary } from 'cloudinary'
+import { dev } from '../config'
+
+const cloudinaryService = cloudinary.config({
+  cloud_name: dev.cloud.cloudinaryName,
+  api_key: dev.cloud.cloudinaryAPIKey,
+  api_secret: dev.cloud.cloudinaryAPISecretKey,
+})
 
 // get all products
 export const getAllProducts = async (request: Request, response: Response, next: NextFunction) => {
@@ -75,7 +85,7 @@ export const deleteProduct = async (request: Request, response: Response, next: 
 export const createProduct = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const newInput = request.body
-    const imagePath = request.file?.path
+    let imagePath = request.file?.path
     console.log('imagePath ' + imagePath)
 
     const productExist = await services.findIfProductExist(newInput, next)
@@ -98,6 +108,15 @@ export const createProduct = async (request: Request, response: Response, next: 
       console.log('No Image Yet!')
       next()
     }
+
+    const cloudinaryResponse = await cloudinary.uploader.upload(
+      newProduct.image,
+      { folder: 'sda-ecommerce' },
+      function (error, result) {
+        console.log(result)
+      }
+    )
+    newProduct.image = cloudinaryResponse.secure_url
 
     if (newProduct) {
       await newProduct.save()

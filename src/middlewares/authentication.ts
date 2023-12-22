@@ -60,7 +60,7 @@ export const isAdmin = async (request: CustomeRequest, response: Response, next:
   }
 }
 
-// check if admin
+// check if not admin
 export const isNotAdmin = async (
   request: CustomeRequest,
   response: Response,
