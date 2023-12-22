@@ -90,7 +90,7 @@ export const findAllProducts = async (request: Request) => {
   }
 }
 // find order by id
-export const findProductById = async (id: string, next: NextFunction) => {
+export const findProductById = async (id: string) => {
   const singleProduct = await Product.findOne({ _id: id })
   if (!singleProduct) {
     throw ApiError.badRequest(404, `Product is not found with this id: ${id}`)
@@ -100,10 +100,10 @@ export const findProductById = async (id: string, next: NextFunction) => {
 // find and delete product by id
 export const findAndDeletedProduct = async (id: string, next: NextFunction) => {
   const deleteSingleProduct = await Product.findOneAndDelete({ _id: id })
-  //delete file from server
-  if (deleteSingleProduct && deleteSingleProduct.image) {
-    await deleteImage(deleteSingleProduct.image)
-  }
+  ////delete file from server
+  // if (deleteSingleProduct && deleteSingleProduct.image) {
+  //   await deleteImage(deleteSingleProduct.image)
+  // }
   if (!deleteSingleProduct) {
     throw ApiError.badRequest(404, `Product is not found with this id: ${id}`)
   }

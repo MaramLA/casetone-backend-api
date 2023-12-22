@@ -40,7 +40,7 @@ export const getSingleProduct = async (
   try {
     const { id } = request.params
 
-    const singleProduct = await services.findProductById(id, next)
+    const singleProduct = await services.findProductById(id)
 
     response.status(200).json({
       message: `Return a single product `,
@@ -58,12 +58,35 @@ export const getSingleProduct = async (
 export const deleteProduct = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { id } = request.params
+    const foldername = 'sda-ecommerce'
 
-    const deletedProduct = await services.findAndDeletedProduct(id, next)
-
-    response.status(200).json({
-      message: `Delete a single product with ID: ${id}`,
+    const deletedProduct = await services.findAndDeletedProduct(id, next).then(async (data) => {
+      if (data) {
+        const parts = data.image.split('/')
+        const publicId = `${foldername}/` + parts[parts.length - 1].split('.')[0] // Assumes last segment is public ID
+        console.log('publicId111: ', publicId)
+        const deletionResult = await cloudinary.uploader.destroy(publicId)
+        if (deletionResult.result === 'ok') {
+          console.log('Image deleted from Cloudinary')
+          response.status(200).json({
+            message: `Delete a single product with ID: ${id}`,
+          })
+        } else {
+          console.error('Failed to delete image from Cloudinary')
+        }
+      }
     })
+    // if (deletedProduct) {
+    //   const parts = deletedProduct.image.split('/')
+    //   const publicId = `${foldername}/` + parts[parts.length - 1].split('.')[0] // Assumes last segment is public ID
+    //   console.log('publicId111: ', publicId)
+    //   const deletionResult = await cloudinary.uploader.destroy(publicId)
+    //   if (deletionResult.result === 'ok') {
+    //     console.log('Image deleted from Cloudinary')
+    //   } else {
+    //     console.error('Failed to delete image from Cloudinary')
+    //   }
+    // }
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       if (error.path === '_id' && error.kind === 'ObjectId') {
@@ -105,8 +128,7 @@ export const createProduct = async (request: Request, response: Response, next: 
       newProduct.image = imagePath
       console.log('Add Image')
     } else if (!imagePath) {
-      console.log('No Image Yet!')
-      next()
+      next(ApiError.badRequest(400, `Provide an image please`))
     }
 
     const cloudinaryResponse = await cloudinary.uploader.upload(
