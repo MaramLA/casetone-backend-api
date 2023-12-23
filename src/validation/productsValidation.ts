@@ -54,14 +54,14 @@ export const productValidationUpdate = [
     .withMessage('Price must not be empty')
     .isFloat({ min: 1 })
     .withMessage('Price Must be a positive number'),
-  check('image')
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Image must not be empty')
-    ?.isURL()
-    .not()
-    .withMessage('Image must be in a URL format'),
+  // check('image')
+  //   .optional()
+  //   .trim()
+  //   .notEmpty()
+  //   .withMessage('Image must not be empty')
+  //   ?.isURL()
+  //   .not()
+  //   .withMessage('Image must be in a URL format'),
   check('description')
     .optional()
     .trim()
