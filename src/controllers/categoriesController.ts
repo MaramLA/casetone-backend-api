@@ -85,13 +85,14 @@ export const createCategory = async (request: Request, response: Response, next:
 
     const category = await services.findIfCategoryExist(newInput, next)
 
-    const newProduct: ICategory = new Category({
+    const newCategory: ICategory = new Category({
       name: newInput.name,
     })
-    await newProduct.save()
+    const savedCategory = await newCategory.save()
 
     response.status(201).json({
       message: `New category is created`,
+      payload: savedCategory,
     })
   } catch (error) {
     next(error)

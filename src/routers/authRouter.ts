@@ -10,7 +10,7 @@ import { userLoginValidation } from '../validation/userValidation'
 
 const router = express.Router()
 
-//GET --> login by email and password
+//POST --> login by email and password
 router.post(
   '/login',
   isLoggedOut,
@@ -19,7 +19,7 @@ router.post(
   runValidation,
   controller.login
 )
-//GET --> logout
+//POST --> logout
 // router.post('/logout', isLoggedIn, controller.logout)
 router.post('/logout', controller.logout)
 
