@@ -2,6 +2,7 @@ import { NextFunction } from 'express'
 
 import ApiError from '../errors/ApiError'
 import { ICategory, Category } from '../models/category'
+import { Product } from '../models/product'
 
 // return all Categories using pagination
 export const findAllCategories = async (page: number, limit: number, search: string) => {
@@ -32,6 +33,14 @@ export const findCategoryById = async (id: string, next: NextFunction) => {
 }
 // find and delete category by id
 export const findAndDeletedCategory = async (id: string, next: NextFunction) => {
+  // Check if any products exist with the specified category
+  const productsWithCategory = await Product.find({ categories: id }).limit(1)
+
+  if (productsWithCategory.length > 0) {
+    // If products exist, return a message indicating that the category cannot be deleted
+    next(ApiError.badRequest(404, `There are products exists under this category`))
+    return
+  }
   const deleteSingleCategory = await Category.findOneAndDelete({ _id: id })
   if (!deleteSingleCategory) {
     next(ApiError.badRequest(404, `Category is not found with this id: ${id}`))

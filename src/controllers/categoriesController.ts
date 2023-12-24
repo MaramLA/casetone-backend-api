@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 
+import mongoose from 'mongoose'
+import ApiError from '../errors/ApiError'
 import { Category, ICategory } from '../models/category'
 import * as services from '../services/categoryService'
-import ApiError from '../errors/ApiError'
-import mongoose from 'mongoose'
 
 // get all categories
 export const getAllCategories = async (
@@ -104,6 +104,8 @@ export const updateCategory = async (request: Request, response: Response, next:
   try {
     const { id } = request.params
     const updatedCategory = request.body
+
+    const isCategoryExist = await services.findIfCategoryExist(updatedCategory, next)
 
     const category = await services.findAndUpdateCategory(id, next, updatedCategory)
 
