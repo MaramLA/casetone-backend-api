@@ -157,88 +157,67 @@ export const createProduct = async (request: Request, response: Response, next: 
     }
   }
 }
+
 // update a specific product
 export const updateProduct = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { id } = request.params
     const updatedProduct = request.body
-    const newImage = request.file && request.file?.path
+    const newImage = request.file && request.file.path
+
+    const foldername = 'sda-ecommerce'
 
     const foundProduct = await Product.findById(id)
     if (!foundProduct) {
       throw ApiError.badRequest(404, `Product is not found with this id: ${id}`)
     }
-    let originalImage = foundProduct && foundProduct.image
+    const originalImage = foundProduct && foundProduct.image
+
+    console.log('newImage1: ', newImage)
+    console.log('originalImage1: ', originalImage)
 
     if (newImage) {
-      try {
-        const cloudinaryResponse = await cloudinary.uploader.upload(
-          newImage,
-          {
-            folder: 'sda-ecommerce',
-          },
-          function (result) {
-            console.log(result)
-          }
-        )
-
-        if (cloudinaryResponse && cloudinaryResponse.secure_url) {
-          updatedProduct.image = cloudinaryResponse.secure_url
-          console.log('Image updated in Cloudinary:', updatedProduct.image)
-        } else {
-          throw ApiError.badRequest(
-            400,
-            'Failed to update image in Cloudinary. Secure URL not found.'
-          )
+      // update product image
+      const cloudinaryResponse = await cloudinary.uploader.upload(
+        newImage,
+        {
+          folder: 'sda-ecommerce',
+        },
+        function (result) {
+          console.log(result)
         }
+      )
 
-        const parts = originalImage && originalImage.split('/')
-        const publicId = parts && `sda-ecommerce/` + parts[parts.length - 1].split('.')[0] // Assumes last segment is public ID
-        console.log('publicId-update: ', publicId)
-        const deletionResult = publicId && (await cloudinary.uploader.destroy(publicId))
-        if (deletionResult.result === 'ok') {
-          console.log('Image deleted from Cloudinary')
-        } else {
-          throw ApiError.badRequest(400, 'Failed to delete image from Cloudinary')
-        }
-      } catch (error) {
-        next(error)
+      updatedProduct.image = cloudinaryResponse.secure_url
+      console.log('updatedProduct.image: ', updatedProduct.image)
+      console.log('Image updated in Cloudinary:', updatedProduct.image)
+    }
+
+    const productUpdated = await services.findAndUpdateProduct(id, request, next, updatedProduct)
+
+    if (!productUpdated) {
+      throw ApiError.badRequest(400, 'Failed to update product data')
+    }
+    console.log('newImage2: ', newImage)
+    console.log('originalImage2: ', originalImage)
+
+    if (newImage && originalImage) {
+      // delete old image from Cloudinary
+      const parts = originalImage.split('/')
+      const publicId = `${foldername}/` + parts[parts.length - 1].split('.')[0] // Extract the public ID
+      console.log('publicId1: ', publicId)
+      const deletionResult = await cloudinary.uploader.destroy(publicId)
+      if (deletionResult.result === 'ok') {
+        console.log('Image deleted from Cloudinary')
+      } else {
+        throw ApiError.badRequest(400, 'Failed to delete image from Cloudinary')
       }
     }
 
-    // if (newImage) {
-    //   const cloudinaryResponse = await cloudinary.uploader.upload(
-    //     newImage,
-    //     { folder: 'sda-ecommerce' },
-    //     function (result, error) {
-    //       if (error) {
-    //         console.log('hey errorrrr: ', error)
-    //       } else {
-    //         console.log(result)
-    //       }
-    //     }
-    //   )
-    //   if (cloudinaryResponse.result === 'ok') {
-    //     updatedProduct.image = cloudinaryResponse.secure_url
-    //     console.log('updatedProduct.image1: ', updatedProduct.image)
-    //     console.log('Image updated in Cloudinary')
-    //     const parts = originalImage && originalImage.split('/')
-    //     const publicId = parts && `sda-ecommerce/` + parts[parts.length - 1].split('.')[0] // Assumes last segment is public ID
-    //     console.log('publicId-update: ', publicId)
-    //     const deletionResult = publicId && (await cloudinary.uploader.destroy(publicId))
-    //     if (deletionResult.result === 'ok') {
-    //       console.log('Image deleted from Cloudinary')
-    //     } else {
-    //       console.error('Failed to delete image from Cloudinary')
-    //     }
-    //   } else {
-    //     console.error('Failed to update image in Cloudinary')
-    //   }
-    //   console.log('updatedProduct.image1: ', updatedProduct.image)
-    // }
-    console.log('updatedProduct.image2: ', updatedProduct.image)
+    console.log('newImage3: ', newImage)
+    console.log('originalImage3: ', originalImage)
 
-    const productUpdated = await services.findAndUpdateProduct(id, request, next, updatedProduct)
+    console.log('productUpdated-last: ', productUpdated)
 
     response.status(200).json({
       message: `Update a single product`,

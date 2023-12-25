@@ -32,15 +32,15 @@ router.put(
   controller.updateUser
 )
 //PUT --> ban a single user by ID
-router.put('/ban/:id', isLoggedIn, isAdmin, controller.banUser)
+router.put('/ban/:id([0-9a-fA-F]{24})', isLoggedIn, isAdmin, controller.banUser)
 //PUT --> unban a single user by ID
-router.put('/unban/:id', isLoggedIn, isAdmin, controller.unBanUser)
+router.put('/unban/:id([0-9a-fA-F]{24})', isLoggedIn, isAdmin, controller.unBanUser)
 //PUT --> upgrade single user role to admin
-router.put('/admin/:id', isLoggedIn, isAdmin, controller.upgradeUserRole)
+router.put('/admin/:id([0-9a-fA-F]{24})', isLoggedIn, isAdmin, controller.upgradeUserRole)
 //PUT --> downgrade single admin role to user
-router.put('/notadmin/:id', isLoggedIn, isAdmin, controller.downgradeUserRole)
+router.put('/notadmin/:id([0-9a-fA-F]{24})', isLoggedIn, isAdmin, controller.downgradeUserRole)
 //DELETE --> delete a single user by ID
-router.delete('/:id', isLoggedIn, isAdmin, controller.deleteUser)
+router.delete('/:id([0-9a-fA-F]{24})', isLoggedIn, isAdmin, controller.deleteUser)
 //POST --> send reset email when forget password
 router.post(
   '/forget-password',

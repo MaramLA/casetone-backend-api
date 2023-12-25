@@ -13,9 +13,9 @@ const router = Router()
 // GET --> get all products
 router.get(`/`, controller.getAllProducts)
 //GET --> get a single product by ID
-router.get(`/:id`, controller.getSingleProduct)
+router.get(`/:id([0-9a-fA-F]{24})`, controller.getSingleProduct)
 //DELETE --> delete a single product by ID
-router.delete(`/:id`, isLoggedIn, isAdmin, controller.deleteProduct)
+router.delete(`/:id([0-9a-fA-F]{24})`, isLoggedIn, isAdmin, controller.deleteProduct)
 //POST --> create a product
 router.post(
   '/',
@@ -28,7 +28,7 @@ router.post(
 )
 //PUT --> update a single product by ID
 router.put(
-  `/:id`,
+  `/:id([0-9a-fA-F]{24})`,
   isLoggedIn,
   isAdmin,
   upload.single('image'),
