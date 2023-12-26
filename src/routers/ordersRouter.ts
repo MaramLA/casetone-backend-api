@@ -11,11 +11,11 @@ router.get('/', isLoggedIn, isNotAdmin, controller.getOrdersForUser)
 //GET --> get all orders for an admin
 router.get('/all-orders', isLoggedIn, isAdmin, controller.getOrdersForAdmin)
 
-//GET --> create an order
-router.post('/process-payment', isLoggedIn, isNotAdmin, controller.handleProcessPayment)
+// //GET --> create an order
+// router.post('/process-payment', isLoggedIn, isNotAdmin, controller.handleProcessPayment)
 
-//DELETE --> delete a single order by ID
-router.delete('/:id([0-9a-fA-F]{24})', isLoggedIn, isAdmin, controller.deleteOrder)
+// //DELETE --> delete a single order by ID
+// router.delete('/:id([0-9a-fA-F]{24})', isLoggedIn, isAdmin, controller.deleteOrder)
 
 //PUT --> update a single order by ID
 router.put('/:id([0-9a-fA-F]{24})', isLoggedIn, isAdmin, controller.updateOrder)

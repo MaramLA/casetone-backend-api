@@ -72,59 +72,59 @@ export const findUserOrders = async (request: CustomeRequest, next: NextFunction
   }
 }
 
-// find and delete order by id
-export const findAndDeleteOrder = async (id: string, next: NextFunction): Promise<void> => {
-  try {
-    const order: IOrder | null = await Order.findOneAndDelete({ _id: id })
+// // find and delete order by id
+// export const findAndDeleteOrder = async (id: string, next: NextFunction): Promise<void> => {
+//   try {
+//     const order: IOrder | null = await Order.findOneAndDelete({ _id: id })
 
-    if (!order) {
-      throw ApiError.badRequest(404, `No order found with id ${id}`)
-    }
+//     if (!order) {
+//       throw ApiError.badRequest(404, `No order found with id ${id}`)
+//     }
 
-    order?.products.map(async (item: IOrderProduct) => {
-      const foundProduct: any = await Product.findById(item.product)
+//     order?.products.map(async (item: IOrderProduct) => {
+//       const foundProduct: any = await Product.findById(item.product)
 
-      if (!foundProduct) {
-        throw ApiError.badRequest(404, `Product is not found with this id: ${item.product}`)
-      }
+//       if (!foundProduct) {
+//         throw ApiError.badRequest(404, `Product is not found with this id: ${item.product}`)
+//       }
 
-      const updatedQuantityValue = foundProduct.quantity + item.quantity
-      const updatedSoldValue = foundProduct.sold - item.quantity
+//       const updatedQuantityValue = foundProduct.quantity + item.quantity
+//       const updatedSoldValue = foundProduct.sold - item.quantity
 
-      const updatedProduct = await Product.findByIdAndUpdate(
-        foundProduct._id,
-        { quantity: updatedQuantityValue, sold: updatedSoldValue },
-        { new: true }
-      )
+//       const updatedProduct = await Product.findByIdAndUpdate(
+//         foundProduct._id,
+//         { quantity: updatedQuantityValue, sold: updatedSoldValue },
+//         { new: true }
+//       )
 
-      if (!updatedProduct) {
-        throw ApiError.badRequest(
-          500,
-          `Process of updating product ${item.product} ended unsuccssufully`
-        )
-      }
-    })
-    const foundUser: any = await User.findById(order?.user)
-    const updatedBalance = foundUser.balance + order?.payment.totalAmount
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: order?.user },
-      { balance: updatedBalance },
-      {
-        new: true,
-      }
-    )
+//       if (!updatedProduct) {
+//         throw ApiError.badRequest(
+//           500,
+//           `Process of updating product ${item.product} ended unsuccssufully`
+//         )
+//       }
+//     })
+//     const foundUser: any = await User.findById(order?.user)
+//     const updatedBalance = foundUser.balance + order?.payment.totalAmount
+//     const updatedUser = await User.findOneAndUpdate(
+//       { _id: order?.user },
+//       { balance: updatedBalance },
+//       {
+//         new: true,
+//       }
+//     )
 
-    if (!updatedUser) {
-      throw ApiError.badRequest(500, `Process of updating user ${order?.user} ended unsuccssufully`)
-    }
-  } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      next(ApiError.badRequest(400, `ID format is Invalid must be 24 characters`))
-    } else {
-      next(error)
-    }
-  }
-}
+//     if (!updatedUser) {
+//       throw ApiError.badRequest(500, `Process of updating user ${order?.user} ended unsuccssufully`)
+//     }
+//   } catch (error) {
+//     if (error instanceof mongoose.Error.CastError) {
+//       next(ApiError.badRequest(400, `ID format is Invalid must be 24 characters`))
+//     } else {
+//       next(error)
+//     }
+//   }
+// }
 
 // find and update order by id
 export const findAndUpdateOrder = async (
@@ -215,63 +215,63 @@ export const findAndUpdateProducts = async (
   }
 }
 
-// handle payment total amount and payment method
-export const handlePayment = async (
-  request: CustomeRequest,
-  subtotalSums: number[],
-  payment: IOrderPayment,
-  products: IProduct[],
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const totalOrderPrice =
-      subtotalSums.length > 0 &&
-      subtotalSums.reduce((firstProductTotal, secondProductTotal) => {
-        return firstProductTotal + secondProductTotal
-      }, 0)
+// // handle payment total amount and payment method
+// export const handlePayment = async (
+//   request: CustomeRequest,
+//   subtotalSums: number[],
+//   payment: IOrderPayment,
+//   products: IProduct[],
+//   next: NextFunction
+// ): Promise<void> => {
+//   try {
+//     const totalOrderPrice =
+//       subtotalSums.length > 0 &&
+//       subtotalSums.reduce((firstProductTotal, secondProductTotal) => {
+//         return firstProductTotal + secondProductTotal
+//       }, 0)
 
-    // check payment method value
-    if (
-      payment.method.toLocaleLowerCase() !== 'cash-on-delivery' &&
-      payment.method.toLocaleLowerCase() !== 'credit-card' &&
-      payment.method.toLocaleLowerCase() !== 'apple-pay' &&
-      payment.method.toLocaleLowerCase() !== 'stc-pay'
-    ) {
-      throw ApiError.badRequest(500, 'Invalid method')
-    }
-    // create a new order
-    const newOrder: IOrder = new Order({
-      products:
-        products.length > 0 &&
-        products.map((item: any) => ({
-          product: item.product,
-          quantity: item.quantity,
-        })),
-      payment: {
-        method: payment.method,
-        totalAmount: totalOrderPrice,
-      },
-      user: request.userId,
-    })
+//     // check payment method value
+//     if (
+//       payment.method.toLocaleLowerCase() !== 'cash-on-delivery' &&
+//       payment.method.toLocaleLowerCase() !== 'credit-card' &&
+//       payment.method.toLocaleLowerCase() !== 'apple-pay' &&
+//       payment.method.toLocaleLowerCase() !== 'stc-pay'
+//     ) {
+//       throw ApiError.badRequest(500, 'Invalid method')
+//     }
+//     // create a new order
+//     const newOrder: IOrder = new Order({
+//       products:
+//         products.length > 0 &&
+//         products.map((item: any) => ({
+//           product: item.product,
+//           quantity: item.quantity,
+//         })),
+//       payment: {
+//         method: payment.method,
+//         totalAmount: totalOrderPrice,
+//       },
+//       user: request.userId,
+//     })
 
-    await newOrder.save(function (error, order) {
-      if (error) {
-        throw ApiError.badRequest(500, 'Process ended unsuccssufully')
-      }
-    })
+//     await newOrder.save(function (error, order) {
+//       if (error) {
+//         throw ApiError.badRequest(500, 'Process ended unsuccssufully')
+//       }
+//     })
 
-    // prepare and send email to place an order
-    const findUser: IUser | any = await User.findById(request.userId)
+//     // prepare and send email to place an order
+//     const findUser: IUser | any = await User.findById(request.userId)
 
-    const emailData = {
-      email: findUser.email,
-      subject: 'Order Placed',
-      html: ` 
-    <h1>Hello ${findUser?.firstName}</h1>
-    <p>Your order ${newOrder._id} was placed succussfully</p>`,
-    }
-    sendEmail(emailData)
-  } catch (error) {
-    next(error)
-  }
-}
+//     const emailData = {
+//       email: findUser.email,
+//       subject: 'Order Placed',
+//       html: ` 
+//     <h1>Hello ${findUser?.firstName}</h1>
+//     <p>Your order ${newOrder._id} was placed succussfully</p>`,
+//     }
+//     sendEmail(emailData)
+//   } catch (error) {
+//     next(error)
+//   }
+// }

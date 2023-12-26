@@ -31,49 +31,49 @@ export const getOrdersForAdmin = async (
   }
 }
 
-// place a new order
-export const handleProcessPayment = async (
-  request: CustomeRequest,
-  response: Response,
-  next: NextFunction
-) => {
-  try {
-    const { products, payment } = request.body
+// // place a new order
+// export const handleProcessPayment = async (
+//   request: CustomeRequest,
+//   response: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { products, payment } = request.body
 
-    let totalProductPrice: number = 0
-    let subtotalSums: number[] = []
+//     let totalProductPrice: number = 0
+//     let subtotalSums: number[] = []
 
-    if (!products || !payment) {
-      throw ApiError.badRequest(404, `Order must contain products and payment data`)
-    }
-    // updataing the qunatity and sold values of each purchased product and calculating the total price of each product
-    const updateProductsData = await services.findAndUpdateProducts(
-      products,
-      subtotalSums,
-      totalProductPrice,
-      next
-    )
+//     if (!products || !payment) {
+//       throw ApiError.badRequest(404, `Order must contain products and payment data`)
+//     }
+//     // updataing the qunatity and sold values of each purchased product and calculating the total price of each product
+//     const updateProductsData = await services.findAndUpdateProducts(
+//       products,
+//       subtotalSums,
+//       totalProductPrice,
+//       next
+//     )
 
-    if (updateProductsData) {
-      return Promise.all(updateProductsData).then(async () => {
-        try {
-          // calculate total payment amount
-          await services.handlePayment(request, subtotalSums, payment, products, next).then(() => {
-            response.status(201).send({
-              message: 'Order placed succsussfully',
-            })
-          })
-        } catch (error) {
-          next(error)
-        }
-      })
-    } else {
-      throw ApiError.badRequest(500, 'Process ended unsuccssufully')
-    }
-  } catch (error) {
-    next(error)
-  }
-}
+//     if (updateProductsData) {
+//       return Promise.all(updateProductsData).then(async () => {
+//         try {
+//           // calculate total payment amount
+//           await services.handlePayment(request, subtotalSums, payment, products, next).then(() => {
+//             response.status(201).send({
+//               message: 'Order placed succsussfully',
+//             })
+//           })
+//         } catch (error) {
+//           next(error)
+//         }
+//       })
+//     } else {
+//       throw ApiError.badRequest(500, 'Process ended unsuccssufully')
+//     }
+//   } catch (error) {
+//     next(error)
+//   }
+// }
 
 // get all orders of a specific user
 export const getOrdersForUser = async (
@@ -95,23 +95,23 @@ export const getOrdersForUser = async (
   }
 }
 
-// delete a specific order
-export const deleteOrder = async (request: Request, response: Response, next: NextFunction) => {
-  try {
-    const { id } = request.params
+// // delete a specific order
+// export const deleteOrder = async (request: Request, response: Response, next: NextFunction) => {
+//   try {
+//     const { id } = request.params
 
-    await services.findAndDeleteOrder(id, next)
+//     await services.findAndDeleteOrder(id, next)
 
-    response.status(204).send({
-      message: `Deleted order with id ${id}`,
-    })
-  } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      next(ApiError.badRequest(400, 'Id format is not valid and must be 24 characters'))
-    }
-    next(error)
-  }
-}
+//     response.status(204).send({
+//       message: `Deleted order with id ${id}`,
+//     })
+//   } catch (error) {
+//     if (error instanceof mongoose.Error.CastError) {
+//       next(ApiError.badRequest(400, 'Id format is not valid and must be 24 characters'))
+//     }
+//     next(error)
+//   }
+// }
 
 // update a specific order
 export const updateOrder = async (request: Request, response: Response, next: NextFunction) => {

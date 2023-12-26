@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-import fs from 'fs/promises'
 import mongoose from 'mongoose'
 
 // import cloudinaryService from '../config/cloudinary'
@@ -7,15 +6,27 @@ import ApiError from '../errors/ApiError'
 import { IProduct, Product } from '../models/product'
 import * as services from '../services/productService'
 
+import braintree from 'braintree'
 import { v2 as cloudinary } from 'cloudinary'
 import { dev } from '../config'
-import { User } from '../models/user'
+import { Order } from '../models/order'
+
+const gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: dev.app.braintreeMerchantId,
+  publicKey: dev.app.braintreePublicKey,
+  privateKey: dev.app.braintreePrivateKey,
+})
 
 const cloudinaryService = cloudinary.config({
   cloud_name: dev.cloud.cloudinaryName,
   api_key: dev.cloud.cloudinaryAPIKey,
   api_secret: dev.cloud.cloudinaryAPISecretKey,
 })
+
+interface CustomeRequest extends Request {
+  userId?: string
+}
 
 // get all products
 export const getAllProducts = async (request: Request, response: Response, next: NextFunction) => {
@@ -125,16 +136,7 @@ export const createProduct = async (request: Request, response: Response, next: 
     } else if (!imagePath) {
       next(ApiError.badRequest(400, `Provide an image please`))
     }
-    // if (newProduct.image) {
-    //   const cloudinaryResponse = await cloudinary.uploader.upload(
-    //     newProduct.image,
-    //     { folder: 'sda-ecommerce' },
-    //     function (result) {
-    //       console.log(result)
-    //     }
-    //   )
-    //   newProduct.image = cloudinaryResponse.secure_url
-    // }
+
     console.log('newProduct.image ' + newProduct.image)
 
     if (newProduct) {
@@ -229,5 +231,78 @@ export const updateProduct = async (request: Request, response: Response, next: 
     } else {
       next(error)
     }
+  }
+}
+
+// gnerate braintree client token
+export const generateBraintreeClientToken = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const braintreeClientToken = await gateway.clientToken.generate({})
+    if (!braintreeClientToken) {
+      throw ApiError.badRequest(400, `Braintree token was not generated`)
+    }
+    response.status(200).json(braintreeClientToken)
+  } catch (error) {
+    next(error)
+  }
+}
+
+// handle braintree payment
+export const handleBraintreePayment = async (
+  request: CustomeRequest,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    console.log(request.body)
+    const { nonce, cartItems, totalAmount } = request.body
+    const result = await gateway.transaction.sale({
+      amount: totalAmount,
+      paymentMethodNonce: nonce,
+      options: {
+        submitForSettlement: true,
+      },
+    })
+
+    console.log(result)
+
+    if (result.success) {
+      console.log('Transaction ID: ' + result.transaction.id)
+      // craete the order here, we need products, payment, user
+      const newOrder = new Order({
+        products: cartItems,
+        payment: result,
+        user: request.userId,
+      })
+      // console.log(newOrder)
+      await newOrder.save()
+
+      const bulkOperation = cartItems.map((item: any) => {
+        return {
+          updateOne: {
+            filter: { _id: item.product._id },
+            update: {
+              $inc: {
+                sold: +item.quantity,
+                quantity: -item.quantity,
+              },
+            },
+          },
+        }
+      })
+
+      await Product.bulkWrite(bulkOperation, {})
+    } else {
+      // console.error(result.message)
+      throw ApiError.badRequest(400, `${result.message}`)
+    }
+
+    response.status(201).json({ message: 'Order placed successfully' })
+  } catch (error) {
+    next(error)
   }
 }
