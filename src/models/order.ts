@@ -6,11 +6,6 @@ export interface IOrderProduct {
   quantity: number
 }
 
-// export interface IOrderPayment {
-//   method: 'cash-on-delivery' | 'credit-card' | 'apple-pay' | 'stc-pay'
-//   totalAmount: number
-// }
-
 export interface IOrderPayment {}
 
 export interface IOrder extends Document {
@@ -41,16 +36,6 @@ const orderSchema = new mongoose.Schema<IOrder>(
     payment: {
       type: Object,
       required: true,
-      // method: {
-      //   type: String,
-      //   enum: ['cash-on-delivery', 'credit-card', 'apple-pay', 'stc-pay'],
-      //   default: 'credit-card',
-      //   required: [true, 'Payment method is required'],
-      // },
-      // totalAmount: {
-      //   type: Number,
-      //   required: [true, 'Total amount is required'],
-      // },
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

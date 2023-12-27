@@ -26,7 +26,7 @@ export const findAllOrdersForAdmin = async (page: number, limit: number, next: N
         path: 'products',
         populate: {
           path: 'product',
-          select: 'name price description',
+          select: 'name price description, image',
         },
       })
       .populate('user', 'firstName lastName email')
@@ -54,7 +54,7 @@ export const findUserOrders = async (request: CustomeRequest, next: NextFunction
         path: 'products',
         populate: {
           path: 'product',
-          select: 'name price description',
+          select: 'name price description image',
         },
       })
       .populate('user', 'firstName lastName email')
@@ -72,59 +72,64 @@ export const findUserOrders = async (request: CustomeRequest, next: NextFunction
   }
 }
 
-// // find and delete order by id
-// export const findAndDeleteOrder = async (id: string, next: NextFunction): Promise<void> => {
-//   try {
-//     const order: IOrder | null = await Order.findOneAndDelete({ _id: id })
+// find and delete order by id
+export const findAndDeleteOrder = async (id: string, next: NextFunction): Promise<void> => {
+  try {
+    const order: any = await Order.findOneAndDelete({ _id: id })
 
-//     if (!order) {
-//       throw ApiError.badRequest(404, `No order found with id ${id}`)
-//     }
+    if (!order) {
+      throw ApiError.badRequest(404, `No order found with id ${id}`)
+    }
 
-//     order?.products.map(async (item: IOrderProduct) => {
-//       const foundProduct: any = await Product.findById(item.product)
+    order?.products.map(async (item: any) => {
+      const foundProduct: any = await Product.findById(item.product)
 
-//       if (!foundProduct) {
-//         throw ApiError.badRequest(404, `Product is not found with this id: ${item.product}`)
-//       }
+      if (!foundProduct) {
+        throw ApiError.badRequest(404, `Product is not found with this id: ${item.product}`)
+      }
 
-//       const updatedQuantityValue = foundProduct.quantity + item.quantity
-//       const updatedSoldValue = foundProduct.sold - item.quantity
+      const updatedQuantityValue = foundProduct.quantity + item.quantity
+      const updatedSoldValue = foundProduct.sold - item.quantity
 
-//       const updatedProduct = await Product.findByIdAndUpdate(
-//         foundProduct._id,
-//         { quantity: updatedQuantityValue, sold: updatedSoldValue },
-//         { new: true }
-//       )
+      const updatedProduct = await Product.findByIdAndUpdate(
+        foundProduct._id,
+        { quantity: updatedQuantityValue, sold: updatedSoldValue },
+        { new: true }
+      )
 
-//       if (!updatedProduct) {
-//         throw ApiError.badRequest(
-//           500,
-//           `Process of updating product ${item.product} ended unsuccssufully`
-//         )
-//       }
-//     })
-//     const foundUser: any = await User.findById(order?.user)
-//     const updatedBalance = foundUser.balance + order?.payment.totalAmount
-//     const updatedUser = await User.findOneAndUpdate(
-//       { _id: order?.user },
-//       { balance: updatedBalance },
-//       {
-//         new: true,
-//       }
-//     )
+      if (!updatedProduct) {
+        throw ApiError.badRequest(
+          500,
+          `Process of updating product ${item.product} ended unsuccssufully`
+        )
+      }
+    })
+    const foundUser: any = await User.findById(order?.user)
+    const updatedBalance = foundUser.balance + order?.payment.transaction.amount
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: order?.user },
+      { balance: updatedBalance },
+      {
+        new: true,
+      }
+    )
 
-//     if (!updatedUser) {
-//       throw ApiError.badRequest(500, `Process of updating user ${order?.user} ended unsuccssufully`)
-//     }
-//   } catch (error) {
-//     if (error instanceof mongoose.Error.CastError) {
-//       next(ApiError.badRequest(400, `ID format is Invalid must be 24 characters`))
-//     } else {
-//       next(error)
-//     }
-//   }
-// }
+    if (!updatedUser) {
+      throw ApiError.badRequest(500, `Process of updating user ${order?.user} ended unsuccssufully`)
+    }
+  } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      next(ApiError.badRequest(400, `ID format is Invalid must be 24 characters`))
+    } else {
+      next(error)
+    }
+  }
+}
+
+// find and delete all user orders
+export const findAndDeleteAllUserOrders = async (id: string, next: NextFunction): Promise<void> => {
+  const userOrders: any = await Order.deleteMany({ user: id })
+}
 
 // find and update order by id
 export const findAndUpdateOrder = async (
@@ -158,7 +163,7 @@ export const findAndUpdateOrder = async (
       if (!updatedOrder) {
         throw ApiError.badRequest(500, 'Updating process ended unsuccussfully')
       }
-  
+
       return updatedOrder
     }
   } catch (error) {
@@ -266,7 +271,7 @@ export const findAndUpdateProducts = async (
 //     const emailData = {
 //       email: findUser.email,
 //       subject: 'Order Placed',
-//       html: ` 
+//       html: `
 //     <h1>Hello ${findUser?.firstName}</h1>
 //     <p>Your order ${newOrder._id} was placed succussfully</p>`,
 //     }

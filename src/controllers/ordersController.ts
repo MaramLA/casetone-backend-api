@@ -95,23 +95,41 @@ export const getOrdersForUser = async (
   }
 }
 
-// // delete a specific order
-// export const deleteOrder = async (request: Request, response: Response, next: NextFunction) => {
-//   try {
-//     const { id } = request.params
+// delete a specific order
+export const deleteOrder = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const { id } = request.params
 
-//     await services.findAndDeleteOrder(id, next)
+    await services.findAndDeleteOrder(id, next)
 
-//     response.status(204).send({
-//       message: `Deleted order with id ${id}`,
-//     })
-//   } catch (error) {
-//     if (error instanceof mongoose.Error.CastError) {
-//       next(ApiError.badRequest(400, 'Id format is not valid and must be 24 characters'))
-//     }
-//     next(error)
-//   }
-// }
+    response.status(204).send({
+      message: `Deleted order with id ${id}`,
+    })
+  } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      next(ApiError.badRequest(400, 'Id format is not valid and must be 24 characters'))
+    }
+    next(error)
+  }
+}
+
+// delete all user orders
+export const deleteAllUserOrders = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const { id } = request.params
+
+    await services.findAndDeleteAllUserOrders(id, next)
+
+    response.status(204).send({
+      message: `Deleted all user orders successfully`,
+    })
+  } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      next(ApiError.badRequest(400, 'Id format is not valid and must be 24 characters'))
+    }
+    next(error)
+  }
+}
 
 // update a specific order
 export const updateOrder = async (request: Request, response: Response, next: NextFunction) => {

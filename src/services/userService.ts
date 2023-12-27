@@ -1,9 +1,10 @@
 import { JwtPayload } from 'jsonwebtoken'
-import { SortOrder } from 'mongoose'
+import mongoose, { SortOrder } from 'mongoose'
 
 import ApiError from '../errors/ApiError'
 import { IUser, User } from '../models/user'
 import { UsersPaginationType } from '../types'
+import { Order } from '../models/order'
 
 // return all Users using pagination
 export const findAllUsers = async (
@@ -87,8 +88,13 @@ export const findUserAndUpdate = async (
 //update role user to admin or user by id user
 export const updateUserRoleById = async (id: string, isAdmin: boolean): Promise<IUser> => {
   const update = { isAdmin: isAdmin }
+  if (isAdmin === true) {
+    const foundUserOrders = await Order.findOne({ user: id })
+    if (foundUserOrders) {
+      throw ApiError.badRequest(403, 'This user does not meet the promotion condition')
+    }
+  }
   const user = await User.findByIdAndUpdate(id, update, { new: true })
-
   if (!user) {
     throw ApiError.badRequest(404, 'User was not found')
   }
@@ -108,6 +114,23 @@ export const updateBanStatusById = async (id: string, isBanned: boolean): Promis
 }
 // find and delete user by id
 export const findAndDeleteUser = async (id: string) => {
+  console.log('findAndDeleteUser')
+
+  // Find all orders associated with the user
+  const userOrders = await Order.find({ user: id })
+
+  // Delete each order associated with the user
+  await Promise.all(
+    userOrders.map(async (order) => {
+      await order.remove()
+    })
+  )
+
+  // After deleting orders, delete the user
+  await User.findByIdAndDelete(id)
+
+  console.log('User and associated orders deleted successfully.')
+
   const user = await User.findByIdAndDelete(id)
 
   if (!user) {
