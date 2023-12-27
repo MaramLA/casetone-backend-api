@@ -223,7 +223,6 @@ export const downgradeUserRole = async (
 export const deleteUser = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { id } = request.params
-    console.log('deleteUser')
     const user = await services.findAndDeleteUser(id)
 
     response.status(204).json({ message: `User with id: ${id} deleted` })

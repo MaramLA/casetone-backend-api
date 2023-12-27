@@ -121,8 +121,6 @@ export const updateBanStatusById = async (id: string, isBanned: boolean): Promis
 
 // find and delete user by id
 export const findAndDeleteUser = async (id: string) => {
-  console.log('findAndDeleteUser')
-
   // Find all orders associated with the user
   const userOrders = await Order.find({ user: id })
 

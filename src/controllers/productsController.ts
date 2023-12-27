@@ -77,15 +77,13 @@ export const deleteProduct = async (request: Request, response: Response, next: 
       if (data) {
         const parts = data.image.split('/')
         const publicId = `${foldername}/` + parts[parts.length - 1].split('.')[0] // Assumes last segment is public ID
-        console.log('publicId111: ', publicId)
         const deletionResult = await cloudinary.uploader.destroy(publicId)
         if (deletionResult.result === 'ok') {
-          console.log('Image deleted from Cloudinary')
           response.status(200).json({
             message: `Delete a single product with ID: ${id}`,
           })
         } else {
-          console.error('Failed to delete image from Cloudinary')
+          next(ApiError.badRequest(400, 'Failed to delete image from Cloudinary'))
         }
       }
     })
@@ -139,8 +137,6 @@ export const createProduct = async (request: Request, response: Response, next: 
       next(ApiError.badRequest(400, `Provide an image please`))
     }
 
-    console.log('newProduct.image ' + newProduct.image)
-
     if (newProduct) {
       const createdProduct = await newProduct.save()
       response.status(201).json({
@@ -177,9 +173,6 @@ export const updateProduct = async (request: Request, response: Response, next: 
     }
     const originalImage = foundProduct && foundProduct.image
 
-    console.log('newImage1: ', newImage)
-    console.log('originalImage1: ', originalImage)
-
     if (newImage) {
       // update product image
       const cloudinaryResponse = await cloudinary.uploader.upload(
@@ -193,8 +186,6 @@ export const updateProduct = async (request: Request, response: Response, next: 
       )
 
       updatedProduct.image = cloudinaryResponse.secure_url
-      console.log('updatedProduct.image: ', updatedProduct.image)
-      console.log('Image updated in Cloudinary:', updatedProduct.image)
     }
 
     const productUpdated = await services.findAndUpdateProduct(id, request, next, updatedProduct)
@@ -202,14 +193,11 @@ export const updateProduct = async (request: Request, response: Response, next: 
     if (!productUpdated) {
       throw ApiError.badRequest(400, 'Failed to update product data')
     }
-    console.log('newImage2: ', newImage)
-    console.log('originalImage2: ', originalImage)
 
     if (newImage && originalImage) {
       // delete old image from Cloudinary
       const parts = originalImage.split('/')
       const publicId = `${foldername}/` + parts[parts.length - 1].split('.')[0] // Extract the public ID
-      console.log('publicId1: ', publicId)
       const deletionResult = await cloudinary.uploader.destroy(publicId)
       if (deletionResult.result === 'ok') {
         console.log('Image deleted from Cloudinary')
@@ -217,11 +205,6 @@ export const updateProduct = async (request: Request, response: Response, next: 
         throw ApiError.badRequest(400, 'Failed to delete image from Cloudinary')
       }
     }
-
-    console.log('newImage3: ', newImage)
-    console.log('originalImage3: ', originalImage)
-
-    console.log('productUpdated-last: ', productUpdated)
 
     response.status(200).json({
       message: `Update a single product`,
@@ -260,7 +243,6 @@ export const handleBraintreePayment = async (
   next: NextFunction
 ) => {
   try {
-    console.log(request.body)
     const { nonce, cartItems, totalAmount } = request.body
     const result = await gateway.transaction.sale({
       amount: totalAmount,
@@ -270,8 +252,6 @@ export const handleBraintreePayment = async (
       },
     })
 
-    console.log(result)
-
     if (result.success) {
       console.log('Transaction ID: ' + result.transaction.id)
       // craete the order here, we need products, payment, user
@@ -280,7 +260,6 @@ export const handleBraintreePayment = async (
         payment: result,
         user: request.userId,
       })
-      // console.log(newOrder)
       await newOrder.save()
 
       const bulkOperation = cartItems.map((item: any) => {

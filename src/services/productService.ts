@@ -110,7 +110,6 @@ export const findAndDeletedProduct = async (id: string, next: NextFunction) => {
 //check entered product is exist on DB or not when a create new product
 export const findIfProductExist = async (newInput: IProduct, next: NextFunction) => {
   const nameInput = newInput.name
-  console.log('nameInput: ', nameInput)
   const productExist = await Product.exists({ name: nameInput })
   if (productExist) {
     throw ApiError.badRequest(409, `Product already exist with this Name: ${nameInput}`)
