@@ -126,18 +126,16 @@ export const findAndDeleteUser = async (id: string) => {
   // Find all orders associated with the user
   const userOrders = await Order.find({ user: id })
 
-  // Delete each order associated with the user
-  await Promise.all(
-    userOrders.map(async (order) => {
-      await order.remove()
-    })
-  )
+  if (userOrders) {
+    // Delete each order associated with the user
+    await Promise.all(
+      userOrders.map(async (order) => {
+        await order.remove()
+      })
+    )
+  }
 
   // After deleting orders, delete the user
-  await User.findByIdAndDelete(id)
-
-  console.log('User and associated orders deleted successfully.')
-
   const user = await User.findByIdAndDelete(id)
 
   if (!user) {
