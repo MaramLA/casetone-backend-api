@@ -1,15 +1,14 @@
 import { NextFunction, Request, Response } from 'express'
-import mongoose from 'mongoose'
-
-// import cloudinaryService from '../config/cloudinary'
-import ApiError from '../errors/ApiError'
-import { IProduct, Product } from '../models/product'
-import * as services from '../services/productService'
 
 import braintree from 'braintree'
 import { v2 as cloudinary } from 'cloudinary'
+import mongoose from 'mongoose'
+
 import { dev } from '../config'
+import ApiError from '../errors/ApiError'
 import { Order } from '../models/order'
+import { IProduct, Product } from '../models/product'
+import * as services from '../services/productService'
 
 const gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
@@ -43,6 +42,7 @@ export const getAllProducts = async (request: Request, response: Response, next:
     next(error)
   }
 }
+
 // get a specific product
 export const getSingleProduct = async (
   request: Request,
@@ -66,6 +66,7 @@ export const getSingleProduct = async (
     }
   }
 }
+
 // delete a specific product
 export const deleteProduct = async (request: Request, response: Response, next: NextFunction) => {
   try {
@@ -105,6 +106,7 @@ export const deleteProduct = async (request: Request, response: Response, next: 
     }
   }
 }
+
 // create a new product
 export const createProduct = async (request: Request, response: Response, next: NextFunction) => {
   try {

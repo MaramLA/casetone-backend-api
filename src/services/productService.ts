@@ -21,7 +21,6 @@ export const findAllProducts = async (request: Request) => {
   // search products
   const searchRegularExpression = new RegExp('.*' + search + '.*', 'i')
   const searchFilter = {
-    // name:{$en : 'nada'}, //return all name product except which hold same this value
     $or: [
       { name: { $regex: searchRegularExpression } },
       { description: { $regex: searchRegularExpression } },
@@ -54,10 +53,9 @@ export const findAllProducts = async (request: Request) => {
     }
   }
 
-  //sort http://localhost:5050/products?sortName=name&sortNum=1
-  //http://localhost:5050/products?sortName=createAt&sortNum=1
   sortNum ? -1 : 1
   sortOption[sortName] = sortNum
+
   //how many have products
   const countPage = await Product.countDocuments()
 
@@ -89,6 +87,7 @@ export const findAllProducts = async (request: Request) => {
     currentPage: page,
   }
 }
+
 // find order by id
 export const findProductById = async (id: string) => {
   const singleProduct = await Product.findOne({ _id: id })
@@ -97,18 +96,17 @@ export const findProductById = async (id: string) => {
   }
   return singleProduct
 }
+
 // find and delete product by id
 export const findAndDeletedProduct = async (id: string, next: NextFunction) => {
   const deleteSingleProduct = await Product.findOneAndDelete({ _id: id })
-  ////delete file from server
-  // if (deleteSingleProduct && deleteSingleProduct.image) {
-  //   await deleteImage(deleteSingleProduct.image)
-  // }
+
   if (!deleteSingleProduct) {
     throw ApiError.badRequest(404, `Product is not found with this id: ${id}`)
   }
   return deleteSingleProduct
 }
+
 //check entered product is exist on DB or not when a create new product
 export const findIfProductExist = async (newInput: IProduct, next: NextFunction) => {
   const nameInput = newInput.name

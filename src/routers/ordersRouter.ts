@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
 import * as controller from '../controllers/ordersController'
-import { isAdmin, isLoggedIn, isNotAdmin } from '../middlewares/authentication'
+import { isAdmin, isLoggedIn } from '../middlewares/authentication'
 
 const router = Router()
 

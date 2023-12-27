@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-
 import mongoose from 'mongoose'
+
 import ApiError from '../errors/ApiError'
 import { Category, ICategory } from '../models/category'
 import * as services from '../services/categoryService'

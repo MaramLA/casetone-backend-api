@@ -1,14 +1,12 @@
 import { NextFunction } from 'express'
 
 import ApiError from '../errors/ApiError'
-import { ICategory, Category } from '../models/category'
+import { Category, ICategory } from '../models/category'
 import { Product } from '../models/product'
 
 // return all Categories using pagination
 export const findAllCategories = async (page: number, limit: number, search: string) => {
-  //how many have categories
   const countPage = await Category.countDocuments()
-  //total page
   const totalPage = limit ? Math.ceil(countPage / limit) : 1
   if (page > totalPage) {
     page = totalPage
@@ -22,6 +20,7 @@ export const findAllCategories = async (page: number, limit: number, search: str
     currentPage: page,
   }
 }
+
 // find category by id
 export const findCategoryById = async (id: string, next: NextFunction) => {
   const singleCategory = await Category.findOne({ _id: id })
@@ -31,13 +30,13 @@ export const findCategoryById = async (id: string, next: NextFunction) => {
   }
   return singleCategory
 }
+
 // find and delete category by id
 export const findAndDeletedCategory = async (id: string, next: NextFunction) => {
   // Check if any products exist with the specified category
   const productsWithCategory = await Product.find({ categories: id }).limit(1)
 
   if (productsWithCategory.length > 0) {
-    // If products exist, return a message indicating that the category cannot be deleted
     next(ApiError.badRequest(404, `There are products exists under this category`))
     return
   }
@@ -48,6 +47,7 @@ export const findAndDeletedCategory = async (id: string, next: NextFunction) => 
   }
   return deleteSingleCategory
 }
+
 //check entered category is exist on DB or not when a create new category
 export const findIfCategoryExist = async (newInput: ICategory, next: NextFunction) => {
   const name = newInput.name
@@ -57,6 +57,7 @@ export const findIfCategoryExist = async (newInput: ICategory, next: NextFunctio
   }
   return categoryExist
 }
+
 // find and update category by id
 export const findAndUpdateCategory = async (
   id: string,

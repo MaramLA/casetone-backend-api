@@ -1,9 +1,9 @@
-import { JwtPayload } from 'jsonwebtoken'
 import { NextFunction, Request, Response } from 'express'
+import { JwtPayload } from 'jsonwebtoken'
 
 import { dev } from '../config'
-import { User } from '../models/user'
 import ApiError from '../errors/ApiError'
+import { User } from '../models/user'
 import { verifyToken } from '../utils/tokenHandle'
 
 interface CustomeRequest extends Request {

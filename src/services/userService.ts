@@ -49,6 +49,7 @@ export const findAllUsers = async (
     currentPage: page,
   }
 }
+
 // find order by user id
 export const findSingleUser = async (filter: object): Promise<IUser> => {
   const user = await User.findOne(filter, {
@@ -60,6 +61,7 @@ export const findSingleUser = async (filter: object): Promise<IUser> => {
   }
   return user
 }
+
 //throw error if entered user email is already used by other users on DB
 export const findIfUserEmailExist = async (inputEmail: string, inputId: string | null = null) => {
   const user = await User.exists({ $and: [{ _id: { $ne: inputId } }, { email: inputEmail }] })
@@ -68,12 +70,14 @@ export const findIfUserEmailExist = async (inputEmail: string, inputId: string |
     throw ApiError.badRequest(409, 'This email is already exists')
   }
 }
+
 // create new user
 export const createUser = async (newUser: JwtPayload): Promise<IUser> => {
   const user = new User(newUser)
   await user.save()
   return user
 }
+
 // find and update user by id
 export const findUserAndUpdate = async (
   filter: object,
@@ -85,6 +89,7 @@ export const findUserAndUpdate = async (
   }
   return user
 }
+
 //update role user to admin or user by id user
 export const updateUserRoleById = async (id: string, isAdmin: boolean): Promise<IUser> => {
   const update = { isAdmin: isAdmin }
@@ -101,6 +106,7 @@ export const updateUserRoleById = async (id: string, isAdmin: boolean): Promise<
 
   return user
 }
+
 //update status of user to block or unblock by id user
 export const updateBanStatusById = async (id: string, isBanned: boolean): Promise<IUser> => {
   const update = { isBanned: isBanned }
@@ -112,6 +118,7 @@ export const updateBanStatusById = async (id: string, isBanned: boolean): Promis
 
   return user
 }
+
 // find and delete user by id
 export const findAndDeleteUser = async (id: string) => {
   console.log('findAndDeleteUser')

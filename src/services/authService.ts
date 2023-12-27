@@ -12,6 +12,7 @@ export const isEmailMatch = async (inputEmail: string): Promise<IUser> => {
   }
   return user
 }
+
 //check entered password match to password on DB
 export const isPasswordMatch = async (user: IUser, password: string) => {
   const passwordCompare = await bycrypt.compare(password, user.password)
@@ -19,6 +20,7 @@ export const isPasswordMatch = async (user: IUser, password: string) => {
     throw ApiError.badRequest(401, 'The password does not match')
   }
 }
+
 //check entered user is blocked or not
 export const isUserBanned = (user: IUser) => {
   if (user.isBanned) {

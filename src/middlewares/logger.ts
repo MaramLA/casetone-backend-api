@@ -1,5 +1,5 @@
-import fs from 'fs'
 import { NextFunction, Request, Response } from 'express'
+import fs from 'fs'
 
 const myLogger = (req: Request, res: Response, next: NextFunction) => {
   const filePath = './src/logs/requests.txt'

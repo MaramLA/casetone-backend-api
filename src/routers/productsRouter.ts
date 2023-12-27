@@ -47,23 +47,4 @@ router.get(`/braintree/token`, isLoggedIn, controller.generateBraintreeClientTok
 // GET --> handle braintree payment
 router.post(`/braintree/payment`, isLoggedIn, controller.handleBraintreePayment)
 
-// --------------
-
-// // GET --> get all products
-// router.get(`/`, controller.getAllProducts)
-// //GET --> get a single product by ID
-// router.get(`/:id`, controller.getSingleProduct)
-// //DELETE --> delete a single product by ID
-// router.delete(`/:id`, controller.deleteProduct)
-// //POST --> create a product
-// router.post('/', upload.single('image'), productValidation, runValidation, controller.createProduct)
-// //PUT --> update a single product by ID
-// router.put(
-//   `/:id`,
-//   upload.single('image'),
-//   productValidationUpdate,
-//   runValidation,
-//   controller.updateProduct
-// )
-
 export default router

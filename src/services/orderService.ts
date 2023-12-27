@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
-
 import mongoose from 'mongoose'
+
 import ApiError from '../errors/ApiError'
-import { IOrder, IOrderPayment, IOrderProduct, Order } from '../models/order'
+import { IOrder, Order } from '../models/order'
 import { IProduct, Product } from '../models/product'
-import { IUser, User } from '../models/user'
-import { sendEmail } from '../utils/sendEmail'
+import { User } from '../models/user'
 
 interface CustomeRequest extends Request {
   userId?: string
@@ -219,64 +218,3 @@ export const findAndUpdateProducts = async (
     next(error)
   }
 }
-
-// // handle payment total amount and payment method
-// export const handlePayment = async (
-//   request: CustomeRequest,
-//   subtotalSums: number[],
-//   payment: IOrderPayment,
-//   products: IProduct[],
-//   next: NextFunction
-// ): Promise<void> => {
-//   try {
-//     const totalOrderPrice =
-//       subtotalSums.length > 0 &&
-//       subtotalSums.reduce((firstProductTotal, secondProductTotal) => {
-//         return firstProductTotal + secondProductTotal
-//       }, 0)
-
-//     // check payment method value
-//     if (
-//       payment.method.toLocaleLowerCase() !== 'cash-on-delivery' &&
-//       payment.method.toLocaleLowerCase() !== 'credit-card' &&
-//       payment.method.toLocaleLowerCase() !== 'apple-pay' &&
-//       payment.method.toLocaleLowerCase() !== 'stc-pay'
-//     ) {
-//       throw ApiError.badRequest(500, 'Invalid method')
-//     }
-//     // create a new order
-//     const newOrder: IOrder = new Order({
-//       products:
-//         products.length > 0 &&
-//         products.map((item: any) => ({
-//           product: item.product,
-//           quantity: item.quantity,
-//         })),
-//       payment: {
-//         method: payment.method,
-//         totalAmount: totalOrderPrice,
-//       },
-//       user: request.userId,
-//     })
-
-//     await newOrder.save(function (error, order) {
-//       if (error) {
-//         throw ApiError.badRequest(500, 'Process ended unsuccssufully')
-//       }
-//     })
-
-//     // prepare and send email to place an order
-//     const findUser: IUser | any = await User.findById(request.userId)
-
-//     const emailData = {
-//       email: findUser.email,
-//       subject: 'Order Placed',
-//       html: `
-//     <h1>Hello ${findUser?.firstName}</h1>
-//     <p>Your order ${newOrder._id} was placed succussfully</p>`,
-//     }
-//     sendEmail(emailData)
-//   } catch (error) {
-//     next(error)
-//   }
-// }

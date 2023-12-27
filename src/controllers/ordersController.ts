@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-
 import mongoose from 'mongoose'
 
 import ApiError from '../errors/ApiError'
@@ -30,50 +29,6 @@ export const getOrdersForAdmin = async (
     next(error)
   }
 }
-
-// // place a new order
-// export const handleProcessPayment = async (
-//   request: CustomeRequest,
-//   response: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const { products, payment } = request.body
-
-//     let totalProductPrice: number = 0
-//     let subtotalSums: number[] = []
-
-//     if (!products || !payment) {
-//       throw ApiError.badRequest(404, `Order must contain products and payment data`)
-//     }
-//     // updataing the qunatity and sold values of each purchased product and calculating the total price of each product
-//     const updateProductsData = await services.findAndUpdateProducts(
-//       products,
-//       subtotalSums,
-//       totalProductPrice,
-//       next
-//     )
-
-//     if (updateProductsData) {
-//       return Promise.all(updateProductsData).then(async () => {
-//         try {
-//           // calculate total payment amount
-//           await services.handlePayment(request, subtotalSums, payment, products, next).then(() => {
-//             response.status(201).send({
-//               message: 'Order placed succsussfully',
-//             })
-//           })
-//         } catch (error) {
-//           next(error)
-//         }
-//       })
-//     } else {
-//       throw ApiError.badRequest(500, 'Process ended unsuccssufully')
-//     }
-//   } catch (error) {
-//     next(error)
-//   }
-// }
 
 // get all orders of a specific user
 export const getOrdersForUser = async (
@@ -114,7 +69,11 @@ export const deleteOrder = async (request: Request, response: Response, next: Ne
 }
 
 // delete all user orders
-export const deleteAllUserOrders = async (request: Request, response: Response, next: NextFunction) => {
+export const deleteAllUserOrders = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = request.params
 

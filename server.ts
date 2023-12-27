@@ -65,7 +65,3 @@ mongoose
 app.listen(port, () => {
   console.log(`Server running http://localhost:${port}`)
 })
-
-// app.use(express.static('imageUser'))
-// app.use('../public', express.static('public'))
-// app.use('/images/*', express.static('public/images'))
