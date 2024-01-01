@@ -17,4 +17,4 @@ const myLogger = (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-export default myLogger
+// export default myLogger

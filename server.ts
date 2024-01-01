@@ -13,7 +13,7 @@ import usersRouter from './src/routers/usersRouter'
 import { dev } from './src/config'
 import ApiError from './src/errors/ApiError'
 import apiErrorHandler from './src/middlewares/errorHandler'
-import myLogger from './src/middlewares/logger'
+// import myLogger from './src/middlewares/logger'
 
 config()
 const app: Application = express()
