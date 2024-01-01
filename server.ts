@@ -26,7 +26,7 @@ const databaseUrl = dev.db.url
 // app.use(myLogger)
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: 'https://sda-online-frontend-project-pah4cm6d4-maram-alfarajs-projects.vercel.app/',
     credentials: true,
   })
 )
