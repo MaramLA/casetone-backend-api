@@ -26,7 +26,6 @@ const databaseUrl = dev.db.url
 app.use(
   cors({
     // origin: 'https://casetone-frontend-n892ov6qe-maram-alfarajs-projects.vercel.app',
-    origin: '*',
     credentials: true,
   })
 )
