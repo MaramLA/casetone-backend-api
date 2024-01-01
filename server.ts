@@ -23,10 +23,9 @@ mongoose.set('strictQuery', false)
 mongoose.set('strictPopulate', false)
 const databaseUrl = dev.db.url
 
-// app.use(myLogger)
 app.use(
   cors({
-    // origin: 'https://sda-online-frontend-project-pah4cm6d4-maram-alfarajs-projects.vercel.app',
+    origin: 'https://casetone-frontend-n892ov6qe-maram-alfarajs-projects.vercel.app',
     credentials: true,
   })
 )
