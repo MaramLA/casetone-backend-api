@@ -88,7 +88,7 @@ export const registUser = async (request: Request, response: Response, next: Nex
       subject: 'Activate your account',
       html: ` 
     <h1> Hello</h1>
-    <p>Please activate your account by <a href= "http://localhost:3000/activate/${token}">click here</a></p>`,
+    <p>Please activate your account by <a href= "https://casetone-frontend-n892ov6qe-maram-alfarajs-projects.vercel.app/activate/${token}">click here</a></p>`,
     }
     sendEmail(emailData)
 
@@ -249,7 +249,7 @@ export const forgetPassword = async (request: Request, response: Response, next:
       subject: 'Reset The password',
       html: ` 
     <h1> Hello ${user.firstName}</h1>
-    <p>Please reset the password by <a href= "http://localhost:3000/reset-password/${token}">click here</a></p>`,
+    <p>Please reset the password by <a href= "https://casetone-frontend-n892ov6qe-maram-alfarajs-projects.vercel.app/reset-password/${token}">click here</a></p>`,
     }
     sendEmail(emailData)
 
