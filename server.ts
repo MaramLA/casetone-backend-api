@@ -25,10 +25,12 @@ const databaseUrl = dev.db.url
 
 app.use(
   cors({
-    origin: 'https://casetone-frontend-n892ov6qe-maram-alfarajs-projects.vercel.app',
+    // origin: 'https://casetone-frontend-n892ov6qe-maram-alfarajs-projects.vercel.app',
+    origin: '*',
     credentials: true,
   })
 )
+
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
