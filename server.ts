@@ -23,7 +23,7 @@ mongoose.set('strictQuery', false)
 mongoose.set('strictPopulate', false)
 const databaseUrl = dev.db.url
 
-app.use(myLogger)
+// app.use(myLogger)
 app.use(
   cors({
     origin: 'http://localhost:3000',
