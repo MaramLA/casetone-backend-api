@@ -6,7 +6,8 @@
   "scripts": {
     "tsc": "tsc",
     "ts-watch": "tsc -w",
-    "start": "nodemon --watch 'src/**/*.ts' --exec ts-node server.ts"
+    "start": "nodemon --watch 'src/**/*.ts' --exec ts-node server.ts",
+    "vercel-build": "echo hello"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
