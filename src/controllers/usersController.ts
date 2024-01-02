@@ -87,7 +87,7 @@ export const registUser = async (request: Request, response: Response, next: Nex
       email: email,
       subject: 'Activate your account',
       html: ` 
-    <h1> Hello</h1>
+    <h1> Hello ${registedUser.firstName}</h1>
     <p>Please activate your account by <a href= "https://casetone-frontend.vercel.app/activate/${token}">click here</a></p>`,
     }
     sendEmail(emailData)
