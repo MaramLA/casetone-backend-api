@@ -80,7 +80,7 @@ export const registUser = async (request: Request, response: Response, next: Nex
     }
 
     await services.findIfUserEmailExist(email)
-    const token = generateToken(registedUser, dev.app.jwtUserActivationKey, '2m')
+    const token = generateToken(registedUser, dev.app.jwtUserActivationKey, '10m')
 
     // prepare and send email to verify user
     const emailData = {
@@ -242,7 +242,7 @@ export const forgetPassword = async (request: Request, response: Response, next:
 
     const user = await services.findSingleUser({ email })
 
-    const token = generateToken({ email }, dev.app.jwtResetKey, '3m')
+    const token = generateToken({ email }, dev.app.jwtResetKey, '10m')
 
     const emailData = {
       email: email,
