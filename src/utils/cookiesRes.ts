@@ -5,6 +5,7 @@ const setCookieResponse = (response: Response, accessToken: string) => {
   response.cookie('access_token', accessToken, {
     maxAge: 4 * 60 * 60 * 1000,
     httpOnly: true,
+    path: '/',
     sameSite: 'none',
     secure: true,
   })
