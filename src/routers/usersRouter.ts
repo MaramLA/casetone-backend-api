@@ -48,7 +48,6 @@ router.delete('/:id([0-9a-fA-F]{24})', isLoggedIn, isAdmin, controller.deleteUse
 //POST --> send reset email when forget password
 router.post(
   '/forget-password',
-  isLoggedOut,
   validation.userForgetPasswordValidation,
   runValidation,
   controller.forgetPassword
@@ -57,7 +56,6 @@ router.post(
 //POST --> reset password
 router.post(
   '/reset-password',
-  isLoggedOut,
   validation.userResetPasswordValidation,
   runValidation,
   controller.resetPassword
