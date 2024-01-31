@@ -16,7 +16,6 @@ router.get('/profile', isLoggedIn, controller.getSingleUser)
 //POST --> register a user
 router.post(
   '/register',
-  isLoggedOut,
   validation.userRegistrationValidation,
   runValidation,
   controller.registUser
