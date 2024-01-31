@@ -5,7 +5,7 @@ import * as services from '../services/authService'
 import setCookieResponse from '../utils/cookiesRes'
 import { generateToken } from '../utils/tokenHandle'
 
-// login authenticaiton
+// login
 export const login = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { email, password } = request.body
@@ -26,7 +26,7 @@ export const login = async (request: Request, response: Response, next: NextFunc
   }
 }
 
-// logout authenticaiton
+// logout
 export const logout = async (request: Request, response: Response, next: NextFunction) => {
   try {
     response.status(200).clearCookie('access_token')
