@@ -14,7 +14,7 @@ export const login = async (request: Request, response: Response, next: NextFunc
     await services.isPasswordMatch(user, password)
     services.isUserBanned(user)
 
-    const accessToken = generateToken({ _id: user.id }, dev.app.jwtAccessKey, '240m')
+    const accessToken = generateToken({ _id: user._id }, dev.app.jwtAccessKey, '40m')
     setCookieResponse(response, accessToken)
 
     response.status(200).json({
